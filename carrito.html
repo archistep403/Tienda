@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>StoreGo | Carrito</title>
+</head>
+<body>
+	<nav class="menu">
+		<a href="index.html" class="elemento">Inicio</a>
+		<a href="productos.html" class="elemento">Productos</a>
+		<a href="contacto.html" class="elemento">Contacto</a>
+		<a href="login.html" class="elemento" id="navAuthLink">Ingresar</a>
+		<a href="admin.html" class="elemento" id="navAdminLink" style="display:none;">Admin</a>
+		<a href="carrito.html" class="carrito">🛒<span id="cartBadge" class="cart-badge"></span></a>
+	</nav>
+
+	<div class="cart-list" id="cartList"></div>
+	<div class="cart-summary" id="cartSummary" style="display:none;">
+		<p class="total">Total: <span id="cartTotal">$0</span></p>
+		<button class="btn" id="checkoutBtn" style="float:none;">Confirmar compra</button>
+	</div>
+
+	<footer class="pie">
+		<p>© 2026 StoreGo. Proyecto educativo.</p>
+	</footer>
+
+	<script src="js/data.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/cart.js"></script>
+	<script src="js/nav.js"></script>
+	<script>
+		function renderCarrito() {
+			const list = document.getElementById('cartList');
+			const summary = document.getElementById('cartSummary');
+			const items = Cart.items();
+
+			if (items.length === 0) {
+				list.innerHTML = '<p class="empty-msg">Tu carrito está vacío. <a href="productos.html" style="color:#2563EB;">Ver productos</a></p>';
+				summary.style.display = 'none';
+				return;
+			}
+
+			list.innerHTML = items.map(item => `
+				<div class="cart-row">
+					<img src="${item.image}" alt="${item.name}">
+					<div class="cart-row-info">
+						<h3>${item.name}</h3>
+						<p>${formatCLP(item.price)} c/u</p>
+						<div class="qty-controls">
+							<button onclick="cambiarCantidad('${item.id}', ${item.qty - 1})">−</button>
+							<span>${item.qty}</span>
+							<button onclick="cambiarCantidad('${item.id}', ${item.qty + 1})">+</button>
+						</div>
+					</div>
+					<div>
+						<p><strong>${formatCLP(item.price * item.qty)}</strong></p>
+						<button class="remove-link" onclick="quitarProducto('${item.id}')">Quitar</button>
+					</div>
+				</div>
+			`).join('');
+
+			document.getElementById('cartTotal').textContent = formatCLP(Cart.total());
+			summary.style.display = 'block';
+		}
+
+		function cambiarCantidad(id, qty) {
+			Cart.setQty(id, qty);
+			renderNav();
+			renderCarrito();
+		}
+
+		function quitarProducto(id) {
+			Cart.remove(id);
+			renderNav();
+			renderCarrito();
+		}
+
+		document.getElementById('checkoutBtn').addEventListener('click', () => {
+			const total = Cart.checkout();
+			renderNav();
+			document.getElementById('cartList').innerHTML =
+				`<p class="empty-msg">¡Gracias por tu compra! Total pagado: ${formatCLP(total)}</p>`;
+			document.getElementById('cartSummary').style.display = 'none';
+		});
+
+		renderCarrito();
+	</script>
+</body>
+</html>

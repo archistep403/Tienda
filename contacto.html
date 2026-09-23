@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+		<title>StoreGo | Contacto</title>
+</head>
+<body>
+	<nav class="menu">
+		<a href="index.html" class="elemento">Inicio</a>
+		<a href="productos.html" class="elemento">Productos</a>
+		<a href="contacto.html" class="elemento">Contacto</a>
+		<a href="login.html" class="elemento" id="navAuthLink">Ingresar</a>
+		<a href="admin.html" class="elemento" id="navAdminLink" style="display:none;">Admin</a>
+		<a href="carrito.html" class="carrito">🛒<span id="cartBadge" class="cart-badge"></span></a>
+	</nav>
+	<div class="form-card" id="contactCard">
+		<h1>Contáctanos</h1>
+		<p class="subtitle">Escríbenos y te responderemos a la brevedad.</p>
+		<p class="form-msg error" id="contactError"></p>
+		<p class="form-msg success" id="contactSuccess"></p>
+		<form id="contactForm">
+			<div class="campo">
+				<label for="contactName">Nombre</label>
+				<input type="text" id="contactName" required>
+			</div>
+			<div class="campo">
+				<label for="contactEmail">Tu correo</label>
+				<input type="email" id="contactEmail" required>
+			</div>
+			<div class="campo">
+				<label for="contactMessage">Mensaje</label>
+				<textarea id="contactMessage" rows="5" required></textarea>
+			</div>
+			<button type="submit" class="form-btn">Enviar mensaje</button>
+		</form>
+		<p class="demo-hint">Enviado mediante EmailJS a archistep403@gmail.com</p>
+	</div>
+
+	<footer class="pie">
+		<p>© 2026 StoreGo. Proyecto educativo.</p>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+	<script src="js/data.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/cart.js"></script>
+	<script src="js/nav.js"></script>
+	<script>
+		// ⚠️ Reemplaza estos tres valores con los de tu cuenta EmailJS
+		// (Account → General para la Public Key; Email Services y Email Templates
+		// para los otros dos IDs). Instrucciones completas en el chat.
+		const EMAILJS_PUBLIC_KEY = 'qYCGCbxLTd7ogutbd';
+		const EMAILJS_SERVICE_ID = 'service_mfboe7p';
+		const EMAILJS_TEMPLATE_ID = 'template_sgvi42q';
+		const CONTACT_EMAIL = 'archistep403@gmail.com';
+
+		emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+		document.getElementById('contactForm').addEventListener('submit', (e) => {
+			e.preventDefault();
+			const name = document.getElementById('contactName').value.trim();
+			const email = document.getElementById('contactEmail').value.trim();
+			const message = document.getElementById('contactMessage').value.trim();
+			const errorEl = document.getElementById('contactError');
+			const successEl = document.getElementById('contactSuccess');
+			const submitBtn = e.target.querySelector('button[type="submit"]');
+
+			errorEl.classList.remove('show');
+			successEl.classList.remove('show');
+
+			if (!name || !email || !message) {
+				errorEl.textContent = 'Completa todos los campos.';
+				errorEl.classList.add('show');
+				return;
+			}
+
+			submitBtn.disabled = true;
+			submitBtn.textContent = 'Enviando...';
+
+			emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+				from_name: name,
+				from_email: email,
+				message: message,
+				to_email: CONTACT_EMAIL,
+			}).then(() => {
+				successEl.textContent = '¡Mensaje enviado! Te responderemos pronto.';
+				successEl.classList.add('show');
+				e.target.reset();
+			}).catch((err) => {
+				console.error('EmailJS error:', err);
+				errorEl.textContent = 'No se pudo enviar el mensaje. Intenta nuevamente más tarde.';
+				errorEl.classList.add('show');
+			}).finally(() => {
+				submitBtn.disabled = false;
+				submitBtn.textContent = 'Enviar mensaje';
+			});
+		});
+	</script>
+</body>
+</html>

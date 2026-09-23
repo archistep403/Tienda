@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>StoreGo | Panel admin</title>
+</head>
+<body>
+	<nav class="menu">
+		<a href="index.html" class="elemento">Inicio</a>
+		<a href="productos.html" class="elemento">Productos</a>
+		<a href="contacto.html" class="elemento">Contacto</a>
+		<a href="login.html" class="elemento" id="navAuthLink">Ingresar</a>
+		<a href="admin.html" class="elemento" id="navAdminLink" style="display:none;">Admin</a>
+		<a href="carrito.html" class="carrito">🛒<span id="cartBadge" class="cart-badge"></span></a>
+	</nav>
+
+	<div class="admin-wrap">
+		<h1>Panel administrativo</h1>
+		<p class="subtitle">Agrega o elimina productos del catálogo.</p>
+
+		<div class="admin-grid">
+			<div class="form-card">
+				<h1 style="font-size:18px;">Nuevo producto</h1>
+				<p class="form-msg error" id="productError"></p>
+				<form id="productForm">
+					<div class="campo">
+						<label for="pName">Nombre</label>
+						<input type="text" id="pName" required>
+					</div>
+					<div class="campo">
+						<label for="pPrice">Precio (CLP)</label>
+						<input type="number" id="pPrice" min="0" step="1" required>
+					</div>
+					<div class="campo">
+						<label for="pStock">Stock</label>
+						<input type="number" id="pStock" min="0" step="1" value="1" required>
+					</div>
+					<div class="campo">
+						<label for="pSpec">Detalle (ej. capacidad)</label>
+						<input type="text" id="pSpec">
+					</div>
+					<div class="campo">
+						<label for="pImage">URL de la imagen</label>
+						<input type="text" id="pImage" placeholder="img/producto.jpg" required>
+					</div>
+					<button type="submit" class="form-btn">Agregar producto</button>
+				</form>
+			</div>
+
+			<div class="admin-table-wrap">
+				<table class="admin-table">
+					<thead>
+						<tr>
+							<th>Producto</th>
+							<th>Precio</th>
+							<th>Stock</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="productTableBody"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<footer class="pie">
+		<p>© 2026 StoreGo. Proyecto educativo.</p>
+	</footer>
+
+	<script src="js/data.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/cart.js"></script>
+	<script src="js/nav.js"></script>
+	<script>
+		if (!Auth.requireAdmin()) {
+			// requireAdmin ya redirige a login.html si no corresponde
+			throw new Error('Acceso restringido');
+		}
+
+		function renderTabla() {
+			const body = document.getElementById('productTableBody');
+			const productos = DB.getProducts();
+			if (productos.length === 0) {
+				body.innerHTML = '<tr><td colspan="4">Sin productos publicados.</td></tr>';
+				return;
+			}
+			body.innerHTML = productos.map(p => `
+				<tr>
+					<td>${p.name}</td>
+					<td>${formatCLP(p.price)}</td>
+					<td>${p.stock}</td>
+					<td><button class="delete-btn" onclick="eliminarProducto('${p.id}')">Eliminar</button></td>
+				</tr>
+			`).join('');
+		}
+
+		function eliminarProducto(id) {
+			DB.deleteProduct(id);
+			renderTabla();
+		}
+
+		document.getElementById('productForm').addEventListener('submit', (e) => {
+			e.preventDefault();
+			const name = document.getElementById('pName').value.trim();
+			const price = Number(document.getElementById('pPrice').value);
+			const stock = Number(document.getElementById('pStock').value);
+			const spec = document.getElementById('pSpec').value.trim();
+			const image = document.getElementById('pImage').value.trim();
+			const errorEl = document.getElementById('productError');
+
+			if (!name || !image || price < 0 || stock < 0) {
+				errorEl.textContent = 'Revisa los datos del producto.';
+				errorEl.classList.add('show');
+				return;
+			}
+			errorEl.classList.remove('show');
+
+			DB.addProduct({
+				id: 'p' + Date.now(),
+				name, price, stock, spec, image,
+			});
+
+			e.target.reset();
+			document.getElementById('pStock').value = 1;
+			renderTabla();
+		});
+
+		renderTabla();
+	</script>
+</body>
+</html>

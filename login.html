@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>StoreGo | Ingresar</title>
+</head>
+<body>
+	<nav class="menu">
+		<a href="index.html" class="elemento">Inicio</a>
+		<a href="productos.html" class="elemento">Productos</a>
+		<a href="contacto.html" class="elemento">Contacto</a>
+		<a href="login.html" class="elemento" id="navAuthLink">Ingresar</a>
+		<a href="admin.html" class="elemento" id="navAdminLink" style="display:none;">Admin</a>
+		<a href="carrito.html" class="carrito">🛒<span id="cartBadge" class="cart-badge"></span></a>
+	</nav>
+
+	<div class="form-card" id="loginCard">
+		<h1>Inicia sesión</h1>
+		<p class="subtitle">Ingresa con tu correo y contraseña.</p>
+		<p class="form-msg error" id="loginError"></p>
+		<form id="loginForm">
+			<div class="campo">
+				<label for="loginEmail">Correo electrónico</label>
+				<input type="email" id="loginEmail" required>
+			</div>
+			<div class="campo">
+				<label for="loginPassword">Contraseña</label>
+				<input type="password" id="loginPassword" required>
+			</div>
+			<button type="submit" class="form-btn">Ingresar</button>
+		</form>
+		<p class="switch-line">¿No tienes cuenta? <a href="#" id="showRegister">Regístrate</a></p>
+		<p class="demo-hint">Cuenta admin de prueba: admin@storego.cl / admin123</p>
+	</div>
+
+	<div class="form-card" id="registerCard" style="display:none;">
+		<h1>Crea tu cuenta</h1>
+		<p class="subtitle">Regístrate para comprar más rápido la próxima vez.</p>
+		<p class="form-msg error" id="registerError"></p>
+		<form id="registerForm">
+			<div class="campo">
+				<label for="registerName">Nombre</label>
+				<input type="text" id="registerName" required>
+			</div>
+			<div class="campo">
+				<label for="registerEmail">Correo electrónico</label>
+				<input type="email" id="registerEmail" required>
+			</div>
+			<div class="campo">
+				<label for="registerPassword">Contraseña</label>
+				<input type="password" id="registerPassword" minlength="4" required>
+			</div>
+			<button type="submit" class="form-btn">Crear cuenta</button>
+		</form>
+		<p class="switch-line">¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión</a></p>
+	</div>
+
+	<footer class="pie">
+		<p>© 2026 StoreGo. Proyecto educativo.</p>
+	</footer>
+
+	<script src="js/data.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/cart.js"></script>
+	<script src="js/nav.js"></script>
+	<script>
+		const params = new URLSearchParams(window.location.search);
+		const nextIsAdmin = params.get('next') === 'admin';
+
+		function goAfterAuth(role) {
+			if (nextIsAdmin || role === 'admin') {
+				window.location.href = 'admin.html';
+			} else {
+				window.location.href = 'productos.html';
+			}
+		}
+
+		document.getElementById('showRegister').addEventListener('click', (e) => {
+			e.preventDefault();
+			document.getElementById('loginCard').style.display = 'none';
+			document.getElementById('registerCard').style.display = 'block';
+		});
+		document.getElementById('showLogin').addEventListener('click', (e) => {
+			e.preventDefault();
+			document.getElementById('registerCard').style.display = 'none';
+			document.getElementById('loginCard').style.display = 'block';
+		});
+
+		document.getElementById('loginForm').addEventListener('submit', (e) => {
+			e.preventDefault();
+			const email = document.getElementById('loginEmail').value.trim();
+			const password = document.getElementById('loginPassword').value;
+			const result = Auth.login(email, password);
+			const errorEl = document.getElementById('loginError');
+			if (!result.ok) {
+				errorEl.textContent = result.error;
+				errorEl.classList.add('show');
+				return;
+			}
+			goAfterAuth(result.user.role);
+		});
+
+		document.getElementById('registerForm').addEventListener('submit', (e) => {
+			e.preventDefault();
+			const name = document.getElementById('registerName').value.trim();
+			const email = document.getElementById('registerEmail').value.trim();
+			const password = document.getElementById('registerPassword').value;
+			const result = Auth.register(name, email, password);
+			const errorEl = document.getElementById('registerError');
+			if (!result.ok) {
+				errorEl.textContent = result.error;
+				errorEl.classList.add('show');
+				return;
+			}
+			goAfterAuth(result.user.role);
+		});
+	</script>
+</body>
+</html>

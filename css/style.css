@@ -1,0 +1,461 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	width: 100%;
+}
+.contenedor {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.card {
+	width: 200px;
+	margin: 20px;
+	padding: 20px;
+	background-color: #F0E2CC;
+	border: 1px solid #E2E8F0;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
+}
+.car {
+	width: 300px;
+}
+.card h2 {
+	color: #2563EB;
+}
+.card p {
+	color: #555;
+}
+.btn {
+	background-color: #2563EB;
+	border: none;
+	margin-top: 30px;
+	padding: 15px 25px;
+	border-radius: 5px;
+	font-weight: bold;
+	color: whitesmoke;
+	font-size: 15px;
+	float: right;
+	transition: 1s ease all;
+}
+.btn:hover {
+	background-color: #eb2525;
+	transition: 1s ease all;
+	cursor: pointer;
+}
+a {
+	text-decoration: none;
+	color: white;
+}
+a:hover {
+	color: coral;
+}
+.menu {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	min-height: 64px;
+	background-color: chocolate;
+	box-shadow: rgba(0, 0, 0, 1) 0px 3px 8px;
+}
+.elemento {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	font-size: 25px;
+	min-height: 64px;
+	font-weight: bold;
+	background-color: chocolate;
+	transition: all 1s ease;
+	padding-left: 10px;
+	padding-right: 10px;
+	flex-grow: 1;
+}
+.elemento:hover {
+	transition: all 1s ease;
+	background-color: #eb2525;
+}
+@media (max-width: 576px){
+	.contenedor {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.articulo {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.btn {
+		padding: 10px 15px;
+		float: left;
+	}
+	.elemento {	
+		padding-left: 10px;
+		padding-right: 10px;
+		font-size: 20px;
+	}
+	
+}
+@media (min-width: 577px) and (max-width: 768px){
+	.elemento {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}
+@media (min-width: 769px) and ( max-width: 992px){
+	.elemento {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}
+@media (min-width: 993px){
+	.elemento {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}
+@media (max-width: 321px){
+	.elemento {
+		font-size: 15px;
+        padding: 0px;
+	}
+}
+.imagen {
+	width: 200px;
+	height: 200px;
+}
+.carrito {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-grow: 1;
+	justify-content: center;
+	min-height: 64px;
+	font-size: 30px;
+	transition: all 1s ease;
+	background-color: chocolate;
+}
+.carrito:hover {
+	transition: all 1s ease;
+	background-color: #eb2525;
+}
+article.portada {
+	width: 90%;
+	height: 500px;
+	margin: 20px;
+	padding: 20px;
+	background-color: #F0E2CC;
+	border: 1px solid #E2E8F0;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
+}
+.pie {
+	background-color: black;
+	color: white;
+	font-size: 25px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	height: 200px;
+}
+/*//max width 576
+//min width 577 max width 768
+//min width 769 max width 992
+//min width 993*/
+
+/* ---------- Carrito real, login/registro y panel admin ---------- */
+
+.cart-badge {
+	background-color: #eb2525;
+	color: white;
+	font-size: 13px;
+	font-weight: bold;
+	border-radius: 50%;
+	padding: 1px 6px;
+	margin-left: 4px;
+}
+
+.cart-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 100%;
+	max-width: 640px;
+	margin: 30px auto;
+	padding: 0 20px;
+}
+
+.cart-row {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	background-color: #F0E2CC;
+	border: 1px solid #E2E8F0;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
+	padding: 14px;
+}
+
+.cart-row img {
+	width: 70px;
+	height: 70px;
+	object-fit: cover;
+	border-radius: 5px;
+}
+
+.cart-row-info {
+	flex: 1;
+}
+
+.cart-row-info h3 {
+	color: #2563EB;
+	font-size: 18px;
+}
+
+.cart-row-info p {
+	color: #555;
+	font-size: 14px;
+}
+
+.qty-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+.qty-controls button {
+	width: 26px;
+	height: 26px;
+	border: none;
+	border-radius: 4px;
+	background-color: chocolate;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.qty-controls button:hover {
+	background-color: #eb2525;
+}
+
+.remove-link {
+	background: none;
+	border: none;
+	color: #eb2525;
+	font-size: 13px;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.cart-summary {
+	max-width: 640px;
+	margin: 0 auto 40px;
+	padding: 20px;
+	text-align: right;
+}
+
+.cart-summary .total {
+	font-size: 22px;
+	font-weight: bold;
+	color: #2563EB;
+	margin-bottom: 14px;
+}
+
+.empty-msg {
+	text-align: center;
+	color: #777;
+	font-size: 18px;
+	margin: 60px auto;
+}
+
+/* Formularios (login / registro / admin) */
+
+.form-card {
+	width: 340px;
+	margin: 50px auto;
+	padding: 30px;
+	background-color: #F0E2CC;
+	border: 1px solid #E2E8F0;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
+}
+
+.form-card h1 {
+	color: #2563EB;
+	font-size: 24px;
+	margin-bottom: 6px;
+}
+
+.form-card .subtitle {
+	color: #555;
+	font-size: 14px;
+	margin-bottom: 20px;
+}
+
+.campo {
+	margin-bottom: 14px;
+}
+
+.campo label {
+	display: block;
+	font-size: 13px;
+	color: #555;
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.campo input, .campo textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #E2E8F0;
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-btn {
+	width: 100%;
+	background-color: chocolate;
+	border: none;
+	padding: 12px;
+	border-radius: 5px;
+	font-weight: bold;
+	color: whitesmoke;
+	font-size: 15px;
+	cursor: pointer;
+	transition: 1s ease all;
+	margin-top: 6px;
+}
+
+.form-btn:hover {
+	background-color: #eb2525;
+}
+
+.form-msg {
+	font-size: 13px;
+	padding: 8px 10px;
+	border-radius: 4px;
+	margin-bottom: 14px;
+	display: none;
+}
+
+.form-msg.error {
+	background-color: #fbdada;
+	color: #a4402e;
+}
+
+.form-msg.success {
+	background-color: #d9ecd0;
+	color: #2f6f2f;
+}
+
+.form-msg.show {
+	display: block;
+}
+
+.switch-line {
+	margin-top: 16px;
+	font-size: 13px;
+	text-align: center;
+	color: #555;
+}
+
+.switch-line a {
+	color: #2563EB;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.demo-hint {
+	text-align: center;
+	font-size: 12px;
+	color: #888;
+	margin-top: 14px;
+}
+
+/* Panel admin */
+
+.admin-wrap {
+	max-width: 900px;
+	margin: 30px auto;
+	padding: 0 20px;
+}
+
+.admin-wrap h1 {
+	color: #2563EB;
+}
+
+.admin-wrap .subtitle {
+	color: #555;
+	margin-bottom: 24px;
+}
+
+.admin-grid {
+	display: flex;
+	gap: 30px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.admin-grid .form-card {
+	width: 300px;
+	margin: 0;
+	flex-shrink: 0;
+}
+
+.admin-table-wrap {
+	flex: 1;
+	min-width: 300px;
+	overflow-x: auto;
+}
+
+.admin-table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: white;
+	border: 1px solid #E2E8F0;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.admin-table th, .admin-table td {
+	text-align: left;
+	padding: 10px 12px;
+	border-bottom: 1px solid #E2E8F0;
+	font-size: 14px;
+}
+
+.admin-table th {
+	background-color: #F0E2CC;
+	color: #444;
+}
+
+.admin-table .delete-btn {
+	background: none;
+	border: none;
+	color: #eb2525;
+	cursor: pointer;
+	font-size: 13px;
+	text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+	.form-card {
+		width: 90%;
+	}
+	.cart-row {
+		flex-wrap: wrap;
+	}
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>StoreGo | Productos</title>
+</head>
+<body>
+	<nav class="menu">
+		<a href="index.html" class="elemento">Inicio</a>
+		<a href="productos.html" class="elemento">Productos</a>
+		<a href="contacto.html" class="elemento">Contacto</a>
+		<a href="login.html" class="elemento" id="navAuthLink">Ingresar</a>
+		<a href="admin.html" class="elemento" id="navAdminLink" style="display:none;">Admin</a>
+		<a href="carrito.html" class="carrito">🛒<span id="cartBadge" class="cart-badge"></span></a>
+	</nav>
+	<div class="contenedor" id="catalogo">
+		<!-- Las tarjetas de producto se generan con JavaScript a partir de localStorage -->
+	</div>
+	<footer class="pie">
+		<p>© 2026 StoreGo. Proyecto educativo.</p>
+	</footer>
+
+	<script src="js/data.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/cart.js"></script>
+	<script src="js/nav.js"></script>
+	<script>
+		function renderCatalogo() {
+			const contenedor = document.getElementById('catalogo');
+			const productos = DB.getProducts();
+
+			if (productos.length === 0) {
+				contenedor.innerHTML = '<p class="empty-msg">Por ahora no hay productos publicados.</p>';
+				return;
+			}
+
+			contenedor.innerHTML = productos.map(p => `
+				<div class="card">
+					<img src="${p.image}" alt="${p.name}" class="imagen">
+					<h2>${p.name}</h2>
+					<p>${p.spec || ''}</p>
+					<p>Precio: ${formatCLP(p.price)}</p>
+					<button class="btn" onclick="agregarAlCarrito('${p.id}')">Añadir al Carrito</button>
+				</div>
+			`).join('');
+		}
+
+		function agregarAlCarrito(id) {
+			Cart.add(id, 1);
+			renderNav();
+			const btn = event.target;
+			const original = btn.textContent;
+			btn.textContent = 'Agregado ✓';
+			setTimeout(() => { btn.textContent = original; }, 900);
+		}
+
+		renderCatalogo();
+	</script>
+</body>
+</html>
