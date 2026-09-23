@@ -150,13 +150,142 @@ a:hover {
 }
 article.portada {
 	width: 90%;
-	height: 500px;
 	margin: 20px;
-	padding: 20px;
+	padding: 0;
 	background-color: #F0E2CC;
 	border: 1px solid #E2E8F0;
 	border-radius: 5px;
 	box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
+	overflow: hidden;
+}
+
+.hero {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+	flex-wrap: wrap;
+	padding: 50px 40px;
+}
+
+.hero-text {
+	flex: 1 1 360px;
+}
+
+.hero-eyebrow {
+	color: chocolate;
+	font-weight: bold;
+	font-size: 15px;
+	margin-bottom: 10px;
+}
+
+.hero-text h1 {
+	font-size: 40px;
+	line-height: 1.15;
+	color: #222;
+	margin-bottom: 16px;
+}
+
+.hero-text h1 span {
+	color: #2563EB;
+}
+
+.hero-text p {
+	color: #555;
+	font-size: 17px;
+	max-width: 46ch;
+	margin-bottom: 26px;
+}
+
+.hero-cta {
+	display: flex;
+	gap: 14px;
+	flex-wrap: wrap;
+}
+
+.hero-cta .btn {
+	float: none;
+	margin-top: 0;
+}
+
+.hero-cta .btn-outline {
+	background-color: transparent;
+	border: 2px solid chocolate;
+	color: chocolate;
+	padding: 13px 25px;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 15px;
+	transition: 1s ease all;
+}
+
+.hero-cta .btn-outline:hover {
+	background-color: chocolate;
+	color: white;
+}
+
+.hero-badges {
+	display: flex;
+	gap: 22px;
+	margin-top: 30px;
+	flex-wrap: wrap;
+}
+
+.hero-badges span {
+	font-size: 13px;
+	color: #555;
+}
+
+.hero-badges strong {
+	display: block;
+	font-size: 20px;
+	color: #2563EB;
+}
+
+.hero-images {
+	flex: 1 1 300px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px;
+}
+
+.hero-images img {
+	width: 100%;
+	height: 140px;
+	object-fit: contain;
+	background-color: #fff;
+	border-radius: 5px;
+	border: 1px solid #E2E8F0;
+	padding: 10px;
+}
+
+.hero-images img.grande {
+	grid-column: span 2;
+	height: 200px;
+}
+
+.destacados {
+	width: 90%;
+	margin: 10px auto 20px;
+}
+
+.destacados h2 {
+	color: #2563EB;
+	font-size: 24px;
+	margin-bottom: 6px;
+}
+
+.destacados .subtitle {
+	color: #555;
+	margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+	.hero {
+		padding: 34px 22px;
+	}
+	.hero-text h1 {
+		font-size: 30px;
+	}
 }
 .pie {
 	background-color: black;

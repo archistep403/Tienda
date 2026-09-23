@@ -17,9 +17,36 @@
 	</nav>
 	<div class="contenedor">
 		<article class="portada">
-
+			<div class="hero">
+				<div class="hero-text">
+					<p class="hero-eyebrow">VENTA DE CONSOLAS</p>
+					<h1>Lleva tu <span>PlayStation</span> a casa hoy</h1>
+					<p>PS5, PS4 y PS3 con stock disponible y despacho a todo el país. Consolas revisadas y listas para jugar desde que las conectas.</p>
+					<div class="hero-cta">
+						<a href="productos.html"><button class="btn" style="float:none;">Ver productos</button></a>
+						<a href="contacto.html"><button class="btn-outline">Hablar con nosotros</button></a>
+					</div>
+					<div class="hero-badges">
+						<span><strong>3</strong>modelos disponibles</span>
+						<span><strong>100%</strong>compra en línea</span>
+						<span><strong>24h</strong>respuesta por contacto</span>
+					</div>
+				</div>
+				<div class="hero-images">
+					<img src="img/ps5.avif" alt="PlayStation 5" class="grande">
+					<img src="img/ps4.webp" alt="PlayStation 4">
+					<img src="img/ps3.jpg" alt="PlayStation 3">
+				</div>
+			</div>
 		</article>
 	</div>
+
+	<div class="destacados">
+		<h2>Destacados</h2>
+		<p class="subtitle">Las consolas más buscadas del catálogo.</p>
+		<div class="contenedor" id="destacadosGrid" style="flex-wrap:wrap;"></div>
+	</div>
+
 	<footer class="pie">
 		<p>© 2026 StoreGo. Proyecto educativo.</p>
 	</footer>
@@ -28,5 +55,25 @@
 	<script src="js/auth.js"></script>
 	<script src="js/cart.js"></script>
 	<script src="js/nav.js"></script>
+	<script>
+		function renderDestacados() {
+			const grid = document.getElementById('destacadosGrid');
+			const productos = DB.getProducts().slice(0, 3);
+			if (productos.length === 0) {
+				grid.innerHTML = '<p class="empty-msg">Aún no hay productos publicados.</p>';
+				return;
+			}
+			grid.innerHTML = productos.map(p => `
+				<div class="card">
+					<img src="${p.image}" alt="${p.name}" class="imagen">
+					<h2>${p.name}</h2>
+					<p>${p.spec || ''}</p>
+					<p>Precio: ${formatCLP(p.price)}</p>
+					<a href="productos.html"><button class="btn">Ver detalle</button></a>
+				</div>
+			`).join('');
+		}
+		renderDestacados();
+	</script>
 </body>
 </html>
