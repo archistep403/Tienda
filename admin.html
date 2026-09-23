@@ -18,13 +18,14 @@
 
 	<div class="admin-wrap">
 		<h1>Panel administrativo</h1>
-		<p class="subtitle">Agrega o elimina productos del catálogo.</p>
+		<p class="subtitle">Agrega, edita o elimina productos del catálogo.</p>
 
 		<div class="admin-grid">
 			<div class="form-card">
-				<h1 style="font-size:18px;">Nuevo producto</h1>
+				<h1 style="font-size:18px;" id="formTitle">Nuevo producto</h1>
 				<p class="form-msg error" id="productError"></p>
 				<form id="productForm">
+					<input type="hidden" id="pId" value="">
 					<div class="campo">
 						<label for="pName">Nombre</label>
 						<input type="text" id="pName" required>
@@ -42,10 +43,18 @@
 						<input type="text" id="pSpec">
 					</div>
 					<div class="campo">
-						<label for="pImage">URL de la imagen</label>
-						<input type="text" id="pImage" placeholder="img/producto.jpg" required>
+						<label for="pImageFile">Foto del producto</label>
+						<input type="file" id="pImageFile" accept="image/*">
+						<img id="pImagePreview" alt="Vista previa" style="display:none; max-width:100%; margin-top:8px; border-radius:5px; border:1px solid #E2E8F0;">
+						<button type="button" id="removeImageBtn" class="remove-link" style="display:none; margin-top:6px;">Quitar imagen</button>
+						<p class="demo-hint" style="margin-top:6px; text-align:left;">Se guarda en el navegador: usa fotos livianas (idealmente menos de 500 KB).</p>
 					</div>
-					<button type="submit" class="form-btn">Agregar producto</button>
+					<div class="campo">
+						<label for="pImage">O pega una URL de imagen</label>
+						<input type="text" id="pImage" placeholder="img/producto.jpg">
+					</div>
+					<button type="submit" class="form-btn" id="submitBtn">Agregar producto</button>
+					<button type="button" class="form-btn" id="cancelEditBtn" style="display:none; background-color:#888; margin-top:8px;">Cancelar edición</button>
 				</form>
 			</div>
 
@@ -53,6 +62,7 @@
 				<table class="admin-table">
 					<thead>
 						<tr>
+							<th></th>
 							<th>Producto</th>
 							<th>Precio</th>
 							<th>Stock</th>
@@ -79,51 +89,131 @@
 			throw new Error('Acceso restringido');
 		}
 
+		let uploadedImageData = null;
+		const fileInput = document.getElementById('pImageFile');
+		const previewImg = document.getElementById('pImagePreview');
+		const removeImageBtn = document.getElementById('removeImageBtn');
+		const urlInput = document.getElementById('pImage');
+
+		function mostrarPreview(src) {
+			previewImg.src = src;
+			previewImg.style.display = 'block';
+			removeImageBtn.style.display = 'inline-block';
+		}
+
+		function limpiarImagenSubida() {
+			uploadedImageData = null;
+			fileInput.value = '';
+			previewImg.style.display = 'none';
+			previewImg.src = '';
+			removeImageBtn.style.display = 'none';
+		}
+
+		fileInput.addEventListener('change', () => {
+			const file = fileInput.files[0];
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = () => {
+				uploadedImageData = reader.result;
+				mostrarPreview(uploadedImageData);
+				urlInput.value = '';
+			};
+			reader.readAsDataURL(file);
+		});
+
+		removeImageBtn.addEventListener('click', limpiarImagenSubida);
+
 		function renderTabla() {
 			const body = document.getElementById('productTableBody');
 			const productos = DB.getProducts();
 			if (productos.length === 0) {
-				body.innerHTML = '<tr><td colspan="4">Sin productos publicados.</td></tr>';
+				body.innerHTML = '<tr><td colspan="5">Sin productos publicados.</td></tr>';
 				return;
 			}
 			body.innerHTML = productos.map(p => `
 				<tr>
+					<td><img src="${p.image}" alt="${p.name}" style="width:44px; height:44px; object-fit:cover; border-radius:4px;"></td>
 					<td>${p.name}</td>
 					<td>${formatCLP(p.price)}</td>
 					<td>${p.stock}</td>
-					<td><button class="delete-btn" onclick="eliminarProducto('${p.id}')">Eliminar</button></td>
+					<td>
+					<button class="delete-btn" onclick="editarProducto('${p.id}')" style="color:#2563EB; margin-right:10px;">Editar</button>
+					<button class="delete-btn" onclick="eliminarProducto('${p.id}')">Eliminar</button>
+				</td>
 				</tr>
 			`).join('');
 		}
 
 		function eliminarProducto(id) {
 			DB.deleteProduct(id);
+			if (document.getElementById('pId').value === id) {
+				salirModoEdicion();
+			}
 			renderTabla();
 		}
 
+		function editarProducto(id) {
+			const producto = DB.getProducts().find(p => p.id === id);
+			if (!producto) return;
+			document.getElementById('pId').value = producto.id;
+			document.getElementById('pName').value = producto.name;
+			document.getElementById('pPrice').value = producto.price;
+			document.getElementById('pStock').value = producto.stock;
+			document.getElementById('pSpec').value = producto.spec || '';
+
+			limpiarImagenSubida();
+			if (producto.image && producto.image.startsWith('data:')) {
+				uploadedImageData = producto.image;
+				mostrarPreview(producto.image);
+				urlInput.value = '';
+			} else {
+				urlInput.value = producto.image || '';
+			}
+
+			document.getElementById('formTitle').textContent = 'Editar producto';
+			document.getElementById('submitBtn').textContent = 'Guardar cambios';
+			document.getElementById('cancelEditBtn').style.display = 'block';
+			document.getElementById('productError').classList.remove('show');
+
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function salirModoEdicion() {
+			document.getElementById('productForm').reset();
+			document.getElementById('pId').value = '';
+			document.getElementById('pStock').value = 1;
+			limpiarImagenSubida();
+			document.getElementById('formTitle').textContent = 'Nuevo producto';
+			document.getElementById('submitBtn').textContent = 'Agregar producto';
+			document.getElementById('cancelEditBtn').style.display = 'none';
+		}
+
+		document.getElementById('cancelEditBtn').addEventListener('click', salirModoEdicion);
+
 		document.getElementById('productForm').addEventListener('submit', (e) => {
 			e.preventDefault();
+			const id = document.getElementById('pId').value;
 			const name = document.getElementById('pName').value.trim();
 			const price = Number(document.getElementById('pPrice').value);
 			const stock = Number(document.getElementById('pStock').value);
 			const spec = document.getElementById('pSpec').value.trim();
-			const image = document.getElementById('pImage').value.trim();
+			const image = uploadedImageData || urlInput.value.trim();
 			const errorEl = document.getElementById('productError');
 
 			if (!name || !image || price < 0 || stock < 0) {
-				errorEl.textContent = 'Revisa los datos del producto.';
+				errorEl.textContent = 'Revisa los datos del producto (falta nombre, precio, stock o imagen).';
 				errorEl.classList.add('show');
 				return;
 			}
 			errorEl.classList.remove('show');
 
-			DB.addProduct({
-				id: 'p' + Date.now(),
-				name, price, stock, spec, image,
-			});
+			if (id) {
+				DB.updateProduct(id, { name, price, stock, spec, image });
+			} else {
+				DB.addProduct({ id: 'p' + Date.now(), name, price, stock, spec, image });
+			}
 
-			e.target.reset();
-			document.getElementById('pStock').value = 1;
+			salirModoEdicion();
 			renderTabla();
 		});
 

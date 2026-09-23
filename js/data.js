@@ -44,6 +44,10 @@ const DB = {
     products.push(product);
     DB.saveProducts(products);
   },
+  updateProduct(id, changes) {
+    const products = DB.getProducts().map(p => (p.id === id ? { ...p, ...changes } : p));
+    DB.saveProducts(products);
+  },
   deleteProduct(id) {
     DB.saveProducts(DB.getProducts().filter(p => p.id !== id));
   },
